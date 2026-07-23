@@ -15,6 +15,7 @@ The deployment uses **Kafka Node Pools** to separate controller and broker roles
 ### Architecture
 
 <img width="738" height="383" alt="kafka excalidraw" src="https://github.com/user-attachments/assets/e0328c8c-db08-42a0-a3fb-57e60bf43da5" />
+
 ---
 
 ### Prerequisites
