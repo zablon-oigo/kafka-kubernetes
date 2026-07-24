@@ -1,10 +1,8 @@
----
 name: Validate Kubernetes Manifests
 
-'on':
+on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
 
 jobs:
@@ -14,27 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
+      - uses: azure/setup-kubectl@v4
 
-      - name: Validate manifests
+      - uses: helm/kind-action@v1
+
+      - name: Install Strimzi
         run: |
-          kubectl apply \
-            --dry-run=client \
-            --validate=false \
-            -f kafka-controller.yaml
+          kubectl create namespace kafka
 
-          kubectl apply \
-            --dry-run=client \
-            --validate=false \
-            -f kafka-broker.yaml
+          kubectl apply -f https://strimzi.io/install/latest?namespace=kafka -n kafka
 
-          kubectl apply \
-            --dry-run=client \
-            --validate=false \
-            -f kafka-cluster.yaml
+          kubectl wait deployment/strimzi-cluster-operator \
+            -n kafka \
+            --for=condition=Available \
+            --timeout=300s
 
-          kubectl apply \
-            --dry-run=client \
-            --validate=false \
-            -f kafka-topic.yaml
+      - name: Apply manifests
+        run: |
+          kubectl apply -f kafka-controller.yaml
+          kubectl apply -f kafka-broker.yaml
+          kubectl apply -f kafka-cluster.yaml
+          kubectl apply -f kafka-topic.yaml
