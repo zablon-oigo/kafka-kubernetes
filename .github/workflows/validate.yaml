@@ -1,0 +1,36 @@
+---
+name: Validate Kubernetes Manifests
+
+'on':
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Validate manifests
+        run: |
+          kubectl apply \
+            --dry-run=client \
+            -f kafka-controller.yaml
+
+          kubectl apply \
+            --dry-run=client \
+            -f kafka-broker.yaml
+
+          kubectl apply \
+            --dry-run=client \
+            -f kafka-cluster.yaml
+
+          kubectl apply \
+            --dry-run=client \
+            -f kafka-topic.yaml
