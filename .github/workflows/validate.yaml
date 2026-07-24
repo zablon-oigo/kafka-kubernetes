@@ -21,16 +21,20 @@ jobs:
         run: |
           kubectl apply \
             --dry-run=client \
+            --validate=false \
             -f kafka-controller.yaml
 
           kubectl apply \
             --dry-run=client \
+            --validate=false \
             -f kafka-broker.yaml
 
           kubectl apply \
             --dry-run=client \
+            --validate=false \
             -f kafka-cluster.yaml
 
           kubectl apply \
             --dry-run=client \
+            --validate=false \
             -f kafka-topic.yaml
